@@ -1,0 +1,50 @@
+// MARK: - 模版化生成 Route 代码
+<% let routeProtocol = "SourceryRouteGenerator" -%><%# 协议名 -%>
+<% var routeName = "DefaultRoute" -%>
+<% for p in types.all where p.annotations["route_base"] != nil { -%>
+<% routeName = p.name; break; -%>
+<% } -%>
+<% for s in types.implementing[routeProtocol] where s.kind == "enum" { -%>
+<% guard let s = s as? Enum else { break } -%>
+<% generateCode(s) -%>
+<% } -%>
+<% fileprivate func generateCode(_ enum: Enum) { -%>
+<% for routeCase in `enum`.cases { -%>
+<% generateCode(routeCase, `enum`.name.replaceBeforeFirstDot(routeName)) -%>
+<% if routeCase.hasAssociatedValue { -%>
+<% for value in routeCase.associatedValues where value.type?.kind == "enum" { -%>
+<% guard let type = value.type as? Enum else { return } -%>
+<% generateCode(type) -%>
+<% } -%>
+<% } -%>
+<% } -%>
+<% } -%>
+<% fileprivate func generateCode(_ case: EnumCase, _ name: String) { -%>
+extension <%= name%> {
+  var <%= `case`.name%>: <%= `case`.name.capitalizeFirstLetter()%> { <%= `case`.name.capitalizeFirstLetter()%>(path: path.appending("<%= `case`.name%>/")) }
+  
+  struct <%= `case`.name.capitalizeFirstLetter()%>: Route {
+    var path: String
+    
+    init(path: String) {
+      self.path = path
+    }
+  }
+}
+
+<% } -%>
+<% extension String { -%>
+<%   fileprivate func capitalizeFirstLetter() -> String { -%>
+<%     guard let firstChar = self.first else { -%>
+<%       return self -%>
+<%     } -%>
+<%     return firstChar.uppercased() + self.dropFirst() -%>
+<%   } -%>
+<%  fileprivate func replaceBeforeFirstDot(_ value: String) -> String { -%>
+<%    if let range = self.range(of: ".") { -%>
+<%      let startIndex = range.upperBound -%>
+<%      return value + "." + String(self[startIndex...]) -%>
+<%    } -%>
+<%    return value -%>
+<%  } -%>
+<% } -%>
