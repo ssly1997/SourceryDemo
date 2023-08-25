@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Interface
 
 enum ModuleBRoute: SourceryRouteGenerator {
   case message
@@ -20,7 +21,7 @@ extension ModuleBRoute {
     case search
     
     enum Request {
-      case detail
+      case detail(DetailInfo)
       case list
     }
   }

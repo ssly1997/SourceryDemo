@@ -10,22 +10,38 @@
 <% } -%>
 <% fileprivate func generateCode(_ enum: Enum) { -%>
 <% for routeCase in `enum`.cases { -%>
-<% generateCode(routeCase, `enum`.name.replaceBeforeFirstDot(routeName)) -%>
+<% var paramsType: String? = nil -%>
+<% paramsType = routeCase.associatedValues.first { $0.typeName.name.getStringAfterLastDot() != routeCase.name.capitalizeFirstLetter() }?.typeName.name -%>
+<% generateCode(routeCase, `enum`.name.replaceBeforeFirstDot(routeName), paramsType) -%>
 <% if routeCase.hasAssociatedValue { -%>
-<% for value in routeCase.associatedValues where value.type?.kind == "enum" { -%>
-<% guard let type = value.type as? Enum else { return } -%>
+<% guard routeCase.associatedValues.count <= 2 else { return } -%><%# 关联值数量不应超过两个 -%>
+<% for value in routeCase.associatedValues { -%><%# 处理子路径枚举 -%>
+<% if let type = value.type as? Enum, type.name.getStringAfterLastDot() == routeCase.name.capitalizeFirstLetter() { -%>
 <% generateCode(type) -%>
+<% } else { -%>
 <% } -%>
 <% } -%>
 <% } -%>
 <% } -%>
-<% fileprivate func generateCode(_ case: EnumCase, _ name: String) { -%>
+<% } -%>
+<% fileprivate func generateCode(_ case: EnumCase, _ name: String, _ paramsType: String? = nil) { -%>
 extension <%= name%> {
   var <%= `case`.name%>: <%= `case`.name.capitalizeFirstLetter()%> { <%= `case`.name.capitalizeFirstLetter()%>(path: path.appending("<%= `case`.name%>/")) }
   
   struct <%= `case`.name.capitalizeFirstLetter()%>: Route {
     var path: String
     
+<% if let paramsType { -%>
+    var _params: Optional<<%= paramsType%>> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: <%= paramsType%>) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
+    
+<% } -%>
     init(path: String) {
       self.path = path
     }
@@ -40,11 +56,18 @@ extension <%= name%> {
 <%     } -%>
 <%     return firstChar.uppercased() + self.dropFirst() -%>
 <%   } -%>
-<%  fileprivate func replaceBeforeFirstDot(_ value: String) -> String { -%>
-<%    if let range = self.range(of: ".") { -%>
-<%      let startIndex = range.upperBound -%>
-<%      return value + "." + String(self[startIndex...]) -%>
-<%    } -%>
-<%    return value -%>
+<%   fileprivate func replaceBeforeFirstDot(_ value: String) -> String { -%>
+<%     if let range = self.range(of: ".") { -%>
+<%       let startIndex = range.upperBound -%>
+<%       return value + "." + String(self[startIndex...]) -%>
+<%     } -%>
+<%     return value -%>
+<%   } -%>
+<%   func getStringAfterLastDot() -> String { -%>
+<%   if let range = self.range(of: ".", options: .backwards) { -%>
+<%     let startIndex = self.index(after: range.lowerBound) -%>
+<%     let substringAfterLastDot = self[startIndex...] -%>
+<%     return String(substringAfterLastDot) -%>
+<%   } else { return self } -%>
 <%  } -%>
 <% } -%>

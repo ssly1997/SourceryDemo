@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Interface
 
 enum ModuleARoute: SourceryRouteGenerator {
   case account(Account)
@@ -15,12 +16,12 @@ enum ModuleARoute: SourceryRouteGenerator {
 
 extension ModuleARoute {
   enum Account {
-    case login
+    case login(AccountInfo)
     case logoff
-    case bind(Bind)
+    case bind(Bind, BindInfo)
     
     enum Bind {
-      case google
+      case google(BindInfo)
       case wechat
       case email
     }

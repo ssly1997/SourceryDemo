@@ -7,7 +7,8 @@
 
 import Foundation
 
-print(LFC.account.bind.google.route)
+print(LFC.account.bind.google.params(.init(value: "er", bindId: "aa")).route)
 print(LFC.profile.edit.name.route)
 print(LFC.developer.fileExplorer.route)
-print(LFC.friend.request.detail.route)
+print(LFC.friend.request.detail.params(.init(value: "asd", id: 999)).route)
+print(LFC.account.bind.params(.init(value: "bindValue", bindId: "lfc_sdz")).route)

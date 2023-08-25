@@ -2,6 +2,7 @@
 // DO NOT EDIT
 
 import Route
+import Interface
 
 // MARK: - 模版化生成 Route 代码
 extension _LFCRoute {
@@ -21,6 +22,15 @@ extension _LFCRoute.Account {
   
   struct Login: Route {
     var path: String
+    
+    var _params: Optional<AccountInfo> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: AccountInfo) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
     
     init(path: String) {
       self.path = path
@@ -46,6 +56,15 @@ extension _LFCRoute.Account {
   struct Bind: Route {
     var path: String
     
+    var _params: Optional<BindInfo> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: BindInfo) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
+    
     init(path: String) {
       self.path = path
     }
@@ -57,6 +76,15 @@ extension _LFCRoute.Account.Bind {
   
   struct Google: Route {
     var path: String
+    
+    var _params: Optional<BindInfo> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: BindInfo) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
     
     init(path: String) {
       self.path = path
@@ -249,6 +277,15 @@ extension _LFCRoute.Friend.Request {
   
   struct Detail: Route {
     var path: String
+    
+    var _params: Optional<DetailInfo> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: DetailInfo) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
     
     init(path: String) {
       self.path = path
