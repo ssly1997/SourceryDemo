@@ -23,7 +23,7 @@ extension _LFCRoute.Account {
   struct Login: Route {
     var path: String
     
-    var _params: Optional<AccountInfo> = nil
+    private var _params: Optional<AccountInfo> = nil
     var params: Codable? { _params }
     
     func params(_ data: AccountInfo) -> Self {
@@ -56,7 +56,7 @@ extension _LFCRoute.Account {
   struct Bind: Route {
     var path: String
     
-    var _params: Optional<BindInfo> = nil
+    private var _params: Optional<BindInfo> = nil
     var params: Codable? { _params }
     
     func params(_ data: BindInfo) -> Self {
@@ -77,7 +77,7 @@ extension _LFCRoute.Account.Bind {
   struct Google: Route {
     var path: String
     
-    var _params: Optional<BindInfo> = nil
+    private var _params: Optional<BindInfo> = nil
     var params: Codable? { _params }
     
     func params(_ data: BindInfo) -> Self {
@@ -278,7 +278,7 @@ extension _LFCRoute.Friend.Request {
   struct Detail: Route {
     var path: String
     
-    var _params: Optional<DetailInfo> = nil
+    private var _params: Optional<DetailInfo> = nil
     var params: Codable? { _params }
     
     func params(_ data: DetailInfo) -> Self {
@@ -310,6 +310,15 @@ extension _LFCRoute.Friend {
   
   struct Search: Route {
     var path: String
+    
+    private var _params: Optional<String> = nil
+    var params: Codable? { _params }
+    
+    func params(_ data: String) -> Self {
+      var variableSelf = self
+      variableSelf._params = data
+      return variableSelf
+    }
     
     init(path: String) {
       self.path = path

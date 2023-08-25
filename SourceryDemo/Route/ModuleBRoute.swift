@@ -18,7 +18,7 @@ extension ModuleBRoute {
   enum Friend {
     case list
     case request(Request)
-    case search
+    case search(String)
     
     enum Request {
       case detail(DetailInfo)

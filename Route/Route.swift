@@ -24,14 +24,16 @@ extension Route {
   public var route: String {
     var _route = ""
     let _domain = domain.isEmpty ? "" : "\(domain)."
-    _route = "\(scheme)://\(_domain)\(path)".removeTrailingBackslash()
-    if let json = params?.json, !json.isEmpty {
-      _route = _route + "?"
+    _route = "\(scheme)://\(_domain)\(path)".removeTrailing(char: "/")
+    guard let params else { return _route }
+    guard !simpleType(params) else { return _route + "?\(params)" }
+    if let json = params.json, !json.isEmpty {
+      _route += "?"
       for (key, value) in json {
         _route += "\(key)=\(value)&"
       }
     }
-    return _route.removeTrailingAmpersand()
+    return _route.removeTrailing(char: "&")
   }
   
   public var params: Codable? { nil }
@@ -39,18 +41,15 @@ extension Route {
   public init() {
     self.init(path: "")
   }
+  
+  func simpleType(_ type: Any) -> Bool {
+    return type is Int || type is String || type is Double || type is Float
+  }
 }
 
 extension String {
-  fileprivate func removeTrailingBackslash() -> String {
-    if self.last == "/" {
-      return String(self.dropLast())
-    }
-    return self
-  }
-  
-  fileprivate func removeTrailingAmpersand() -> String {
-    if self.last == "&" {
+  fileprivate func removeTrailing(char: Character) -> String {
+    if self.last == char {
       return String(self.dropLast())
     }
     return self

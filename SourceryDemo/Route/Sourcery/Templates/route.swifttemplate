@@ -32,7 +32,7 @@ extension <%= name%> {
     var path: String
     
 <% if let paramsType { -%>
-    var _params: Optional<<%= paramsType%>> = nil
+    private var _params: Optional<<%= paramsType%>> = nil
     var params: Codable? { _params }
     
     func params(_ data: <%= paramsType%>) -> Self {
